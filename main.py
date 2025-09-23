@@ -15,7 +15,7 @@ def main():
     except ImportError as e:
         print(f"Module Not Installed: {e.Message}")
     
-    dataset_path = "./dataset/feature_engineered_dataset.csv"
+    dataset_path = "./dataset/feature_extracted_dataset.csv"
     loader = DataLoader(dataset_path, target_col="Parkinson's Disease status")
     dataset = loader.run()
     featureset, label = loader.featureset, loader.label
@@ -32,7 +32,7 @@ def main():
     meta_learner = LogisticRegression()
     models = {
         "CatBoost": CatBoostClassifier(random_state=63, verbose=False),
-        "Explanaible Boosting Classifier": ExplainableBoostingClassifier(random_state=63),
+        "Explainable Boosting Classifier": ExplainableBoostingClassifier(random_state=63),
         "Meta Learner": StackingClassifier(
             estimators=base_models,
             final_estimator=meta_learner,

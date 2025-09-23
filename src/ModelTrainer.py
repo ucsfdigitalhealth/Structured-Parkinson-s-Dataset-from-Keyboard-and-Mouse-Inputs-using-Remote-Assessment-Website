@@ -27,52 +27,62 @@ class PlotManager:
     def plot_roc_prc_curve(self, model_name):
         tpr_array = np.array(self.results[model_name]['fpr'])
         tpr_mean = tpr_array.mean(axis=0)
-        tpr_std = tpr_array.std(axis=0)
+        tpr_std  = tpr_array.std(axis=0)
 
         prec_array = np.array(self.results[model_name]['rec'])
         prec_mean = prec_array.mean(axis=0)
-        prec_std = prec_array.std(axis=0)
+        prec_std  = prec_array.std(axis=0)
 
-        fpr_interp = np.linspace(0, 1, 100)
+        fpr_interp    = np.linspace(0, 1, 100)
         recall_interp = np.linspace(0, 1, 100)
 
-        mean_auc = np.mean(self.results[model_name]['auc'])
-        std_auc = np.std(self.results[model_name]['auc'])   
-
+        mean_auc  = np.mean(self.results[model_name]['auc'])
+        std_auc   = np.std(self.results[model_name]['auc'])
         mean_auprc = np.mean(self.results[model_name]['auprc'])
-        std_auprc = np.std(self.results[model_name]['auprc'])
-        self.results[model_name]['auprc']
+        std_auprc  = np.std(self.results[model_name]['auprc'])
 
-        plt.figure(figsize=(12, 5), dpi=1200)
+        fig, axes = plt.subplots(1, 2, figsize=(12, 5), dpi=1200)
 
-        plt.subplot(1, 2, 1)
-        plt.plot(fpr_interp, tpr_mean, color='#1b9e77')
-        plt.fill_between(fpr_interp, tpr_mean - tpr_std, tpr_mean + tpr_std, color='#1b9e77', alpha=0.2)
-        plt.plot([0, 1], [0, 1], linestyle='--', color='#aaaaaa')
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Mean AUROC (5-Fold CV)')
+        ax = axes[0]
+        ax.plot(fpr_interp, tpr_mean, color='#1b9e77', lw=2)
+        ax.fill_between(fpr_interp, tpr_mean - tpr_std, tpr_mean + tpr_std,
+                        color='#1b9e77', alpha=0.2, zorder=1)
+        ax.plot([0, 1], [0, 1], linestyle='--', color='#aaaaaa', lw=1)
+
+        ax.set_xlabel('False Positive Rate')
+        ax.set_ylabel('True Positive Rate')
+        ax.set_title('Mean AUROC (5-Fold CV)')
+
+        ax.set_axisbelow(True)
+        ax.grid(True, which='both', linestyle='--', linewidth=0.7, alpha=0.7)
 
         auroc_handles = [
             Line2D([0], [0], color='#1b9e77', lw=2, label=f'Mean AUROC = {mean_auc:.3f}'),
             Patch(facecolor='#1b9e77', alpha=0.2, label=f'Standard Deviation ± {std_auc:.3f}')
         ]
-        plt.legend(handles=auroc_handles, loc='lower right')
+        ax.legend(handles=auroc_handles, loc='lower right')
 
-        plt.subplot(1, 2, 2)
-        plt.plot(recall_interp, prec_mean, color='#d95f02')
-        plt.fill_between(recall_interp, prec_mean - prec_std, prec_mean + prec_std, color='#d95f02', alpha=0.2)
-        plt.xlabel('Recall')
-        plt.ylabel('Precision')
-        plt.title('Mean AUPRC (5-Fold CV)')
+        ax = axes[1]
+        ax.plot(recall_interp, prec_mean, color='#d95f02', lw=2)
+        ax.fill_between(recall_interp, prec_mean - prec_std, prec_mean + prec_std,
+                        color='#d95f02', alpha=0.2, zorder=1)
+
+        ax.set_xlabel('Recall')
+        ax.set_ylabel('Precision')
+        ax.set_title('Mean AUPRC (5-Fold CV)')
+
+        ax.set_axisbelow(True)
+        ax.grid(True, which='both', linestyle='--', linewidth=0.7, alpha=0.7)
 
         auprc_handles = [
             Line2D([0], [0], color='#d95f02', lw=2, label=f'Mean AUPRC = {mean_auprc:.3f}'),
             Patch(facecolor='#d95f02', alpha=0.2, label=f'Standard Deviation ± {std_auprc:.3f}')
         ]
-        plt.legend(handles=auprc_handles, loc='lower left')
-        plt.tight_layout()
-        plt.savefig(self.result_path+model_name+"_roc_prc_curve.png", dpi=1200)
+        ax.legend(handles=auprc_handles, loc='lower left')
+
+        fig.tight_layout()
+        plt.savefig(self.result_path + model_name + "_roc_prc_curve.png", dpi=1200)
+        plt.close(fig)
 
     def plot_bar_chart(self):
         models = list(self.results.keys())
@@ -102,7 +112,7 @@ class PlotManager:
 
         model_colors = {
             "CatBoost": "#8da8d3",
-            "Explanaible Boosting Classifier": "#a1d99b",
+            "Explainable Boosting Classifier": "#a1d99b",
             "Meta Learner": "#f6c969"
         }
 
