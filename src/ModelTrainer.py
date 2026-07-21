@@ -6,10 +6,15 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
-from sklearn.model_selection import StratifiedKFold
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score, roc_curve, auc, precision_recall_curve
+from sklearn.model_selection import train_test_split, StratifiedKFold
+from sklearn.metrics import f1_score, roc_auc_score, accuracy_score, precision_score, recall_score, roc_curve, auc, precision_recall_curve, average_precision_score
 
+from catboost import CatBoostClassifier
+from interpret.glassbox import ExplainableBoostingClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
+from sklearn.ensemble import StackingClassifier
+from sklearn.linear_model import LogisticRegression
 from tqdm import tqdm
 
 
@@ -188,12 +193,7 @@ class ModelTrainer:
             X_train, X_test = self.featureset.iloc[train_index], self.featureset.iloc[test_index] 
             y_train, y_test = self.label[train_index], self.label[test_index]
 
-            scaler = MinMaxScaler()
-            numerical_features = X_train.select_dtypes(include=['int64', 'float64']).columns
-            X_train[numerical_features] = scaler.fit_transform(X_train[numerical_features])
-
             model.fit(X_train, y_train)
-            X_test[numerical_features] = scaler.transform(X_test[numerical_features])
             y_pred = model.predict(X_test)
             y_pred_proba = model.predict_proba(X_test)[:, 1]
 
