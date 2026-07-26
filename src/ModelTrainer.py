@@ -6,15 +6,10 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 
-from sklearn.model_selection import train_test_split, StratifiedKFold
-from sklearn.metrics import f1_score, roc_auc_score, accuracy_score, precision_score, recall_score, roc_curve, auc, precision_recall_curve, average_precision_score
+from sklearn.model_selection import StratifiedKFold
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score, roc_curve, auc, precision_recall_curve
 
-from catboost import CatBoostClassifier
-from interpret.glassbox import ExplainableBoostingClassifier
-from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
-from sklearn.ensemble import StackingClassifier
-from sklearn.linear_model import LogisticRegression
 from tqdm import tqdm
 
 
@@ -89,8 +84,6 @@ class PlotManager:
 
         mean_f1 = [np.mean(results['f1']) for results in self.results.values()]
         std_f1 = [np.std(results['f1']) for results in self.results.values()]
-        mean_auc = [np.mean(results['auc']) for results in self.results.values()]
-        std_auc = [np.std(results['auc']) for results in self.results.values()]
         mean_accuracy = [np.mean(results['accuracy']) for results in self.results.values()]
         std_accuracy = [np.std(results['accuracy']) for results in self.results.values()]
         mean_precision = [np.mean(results['precision']) for results in self.results.values()]
@@ -159,7 +152,7 @@ class ModelTrainer:
         self.featureset = featureset
         self.label = label
         self.models = models
-        self.results = dict()
+        self.results = {}
 
     def calculate_performance(self, y_test, y_pred, y_pred_proba):
         results = defaultdict(list)
@@ -192,8 +185,13 @@ class ModelTrainer:
         for fold, (train_index, test_index) in enumerate(skf.split(self.featureset, self.label)):
             X_train, X_test = self.featureset.iloc[train_index], self.featureset.iloc[test_index] 
             y_train, y_test = self.label[train_index], self.label[test_index]
+            numerical_cols = self.featureset.select_dtypes(include=['int64', 'float64']).columns
+            scaler = MinMaxScaler()
 
+            X_train[numerical_cols] = scaler.fit_transform(X_train[numerical_cols])
             model.fit(X_train, y_train)
+
+            X_test[numerical_cols] = scaler.transform(X_test[numerical_cols])
             y_pred = model.predict(X_test)
             y_pred_proba = model.predict_proba(X_test)[:, 1]
 
