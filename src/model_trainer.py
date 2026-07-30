@@ -1,15 +1,22 @@
+from collections import defaultdict
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from collections import defaultdict
-import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
-
+from sklearn.metrics import (
+    accuracy_score,
+    auc,
+    f1_score,
+    precision_recall_curve,
+    precision_score,
+    recall_score,
+    roc_curve,
+)
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score, roc_curve, auc, precision_recall_curve
-
 from tqdm import tqdm
 
 
@@ -205,17 +212,17 @@ class ModelTrainer:
     def save_analysis(self):
         plot_manager = PlotManager(self.results)
         
-        for model_name, _ in self.models.items():
+        for model_name in self.models:
             plot_manager.plot_roc_prc_curve(model_name)
         
         plot_manager.plot_bar_chart()
         
     def print_results(self):
-        for model_name, model in self.models.items():
+        for model_name in self.models:
             print(f"{model_name}")
             for metric, value in self.results[model_name].items():
                 print(f"{metric}: {np.mean(value):0.4f} +/- {np.std(value):0.4f}")
-            print("")
+            print(" ")
 
     def run(self):
         for model_name, model in tqdm(self.models.items()):

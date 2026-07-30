@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import Optional, List
+
 import pandas as pd
 
 
 class DataLoader:
 
-    def __init__(self, data_path: str, target_col: Optional[str] = None):
+    def __init__(self, data_path: str, target_col: str | None = None):
         self.data_path = Path(data_path)
         self.target_col = target_col
         self.featureset = None

@@ -1,23 +1,23 @@
-from src.DataLoader import DataLoader
-from src.DataPreprocessor import DataPreprocessor
-from src.ModelTrainer import ModelTrainer
-
 from sklearn.ensemble import StackingClassifier
 from sklearn.linear_model import LogisticRegression
+
+from src.data_loader import DataLoader
+from src.data_preprocessor import DataPreprocessor
+from src.model_trainer import ModelTrainer
 
 
 def main():
     try:
         from catboost import CatBoostClassifier
         from interpret.glassbox import ExplainableBoostingClassifier
-        from xgboost import XGBClassifier
         from lightgbm import LGBMClassifier
+        from xgboost import XGBClassifier
     except ImportError as e:
-        print(f"Module Not Installed: {e.Message}")
+        print(f"Module Not Installed: {e}")
     
-    dataset_path = "./dataset/feature_extracted_dataset.csv"
+    dataset_path = "./dataset/03_feature_extracted_dataset.csv"
     loader = DataLoader(dataset_path, target_col="Parkinson's Disease status")
-    dataset = loader.run()
+    loader.run()
     featureset, label = loader.featureset, loader.label
 
     processor = DataPreprocessor(featureset, label)

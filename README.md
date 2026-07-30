@@ -17,16 +17,15 @@ The project is organized around two complementary workflows:
 |-- uv.lock
 |-- main.py
 |-- Dataset_Paper_Technical_Validation.ipynb
-|-- whitney_t_test.csv
+|-- whitney_test.csv
 |-- dataset/
-|   |-- README.md
-|   |-- raw_data.csv
-|   `-- feature_extracted_dataset.csv
+|   |-- 01_raw_dataset.csv
+|   `-- 03_feature_extracted_dataset.csv
 |-- src/
 |   |-- __init__.py
-|   |-- DataLoader.py
-|   |-- DataPreprocessor.py
-|   `-- ModelTrainer.py
+|   |-- data_loader.py
+|   |-- data_preprocessor.py
+|   `-- model_trainer.py
 `-- analysis/
     |-- CatBoost_roc_prc_curve.png
     |-- Explainable Boosting Classifier_roc_prc_curve.png
@@ -34,7 +33,7 @@ The project is organized around two complementary workflows:
     |-- comparison.png
     |-- pca.png
     |-- t-sne.png
-    `-- t-test.png
+    `-- whitney-test.png
 ```
 
 ## Data and Artifacts
@@ -47,7 +46,7 @@ The `analysis/` directory contains generated visual artifacts, including ROC/PR 
 
 This project is configured for Python 3.11.
 
-Recommended environment manager:
+Environment manager:
 
 - `uv`
 
@@ -75,22 +74,24 @@ git clone <repository-url>
 cd Structured-Parkinson-s-Dataset-from-Keyboard-and-Mouse-Inputs-using-Remote-Assessment-Website-main
 ```
 
-### Option 1: Using `uv`
+Install `uv` if it is not already available:
 
-Use this option if you want to install the dependencies from the locked project environment.
+```powershell
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+For macOS or Linux:
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+For additional installation options and troubleshooting, see the official `uv` installation documentation: <https://docs.astral.sh/uv/getting-started/installation/>.
+
+Install dependencies from the locked project environment:
 
 ```powershell
 uv sync
-```
-
-### Option 2: Manual Virtual Environment
-
-Use this option if you prefer to create and manage the Python environment manually.
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install catboost interpret xgboost lightgbm matplotlib numpy pandas scikit-learn scipy seaborn statsmodels ipykernel
 ```
 
 ## Usage
@@ -101,20 +102,10 @@ This project can be used either through the main Python script or through the no
 
 The `main.py` script runs the core classification pipeline using `dataset/feature_extracted_dataset.csv`.
 
-### Option 1: Using `uv`
-
-If dependencies were installed with `uv`, run:
+Run the script from the repository root:
 
 ```powershell
 uv run python main.py
-```
-
-### Option 2: Manual Virtual Environment
-
-If using the manual virtual environment, activate the environment and run:
-
-```powershell
-python main.py
 ```
 
 The script performs the following operations:
