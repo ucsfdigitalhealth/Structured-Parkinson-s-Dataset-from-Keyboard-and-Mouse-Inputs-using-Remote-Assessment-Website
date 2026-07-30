@@ -1,4 +1,5 @@
 catboost_info/
 .ipynb_checkpoints/
 .venv/
-__pychache__/
+__pycache__/
+*.py[cod]
