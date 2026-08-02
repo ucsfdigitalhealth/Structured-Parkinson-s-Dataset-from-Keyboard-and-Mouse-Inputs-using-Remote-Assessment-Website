@@ -51,9 +51,9 @@ class PlotManager:
                         color='#1b9e77', alpha=0.2, zorder=1)
         ax.plot([0, 1], [0, 1], linestyle='--', color='#aaaaaa', lw=1)
 
-        ax.set_xlabel('False Positive Rate')
-        ax.set_ylabel('True Positive Rate')
-        ax.set_title('Mean AUROC (5-Fold CV)')
+        ax.set_xlabel('False Positive Rate', fontsize=16)
+        ax.set_ylabel('True Positive Rate', fontsize=16)
+        ax.set_title('Mean AUROC (5-Fold CV)', fontsize=16)
 
         ax.set_axisbelow(True)
         ax.grid(True, which='both', linestyle='--', linewidth=0.7, alpha=0.7)
@@ -62,16 +62,16 @@ class PlotManager:
             Line2D([0], [0], color='#1b9e77', lw=2, label=f'Mean AUROC = {mean_auc:.3f}'),
             Patch(facecolor='#1b9e77', alpha=0.2, label=f'Standard Deviation ± {std_auc:.3f}')
         ]
-        ax.legend(handles=auroc_handles, loc='lower right')
+        ax.legend(handles=auroc_handles, loc='lower right', fontsize=16)
 
         ax = axes[1]
         ax.plot(recall_interp, prec_mean, color='#d95f02', lw=2)
         ax.fill_between(recall_interp, prec_mean - prec_std, prec_mean + prec_std,
                         color='#d95f02', alpha=0.2, zorder=1)
 
-        ax.set_xlabel('Recall')
-        ax.set_ylabel('Precision')
-        ax.set_title('Mean AUPRC (5-Fold CV)')
+        ax.set_xlabel('Recall', fontsize=16)
+        ax.set_ylabel('Precision', fontsize=16)
+        ax.set_title('Mean AUPRC (5-Fold CV)', fontsize=16)
 
         ax.set_axisbelow(True)
         ax.grid(True, which='both', linestyle='--', linewidth=0.7, alpha=0.7)
@@ -80,7 +80,7 @@ class PlotManager:
             Line2D([0], [0], color='#d95f02', lw=2, label=f'Mean AUPRC = {mean_auprc:.3f}'),
             Patch(facecolor='#d95f02', alpha=0.2, label=f'Standard Deviation ± {std_auprc:.3f}')
         ]
-        ax.legend(handles=auprc_handles, loc='lower left')
+        ax.legend(handles=auprc_handles, loc='lower left', fontsize=16)
 
         fig.tight_layout()
         plt.savefig(self.result_path + model_name + "_roc_prc_curve.png", dpi=1200)
@@ -128,6 +128,8 @@ class PlotManager:
             errorbar=None
         )
 
+        ax.tick_params(axis='both', labelsize=14)
+
         for i, row in metrics_df.iterrows():
             x = row["Mean"]
             xerr = row["Std"]
@@ -138,15 +140,15 @@ class PlotManager:
 
             ax.annotate(f"{x:.4f} ± {xerr:.4f}",
                         (x + xerr + 0.005, y),
-                        va='center', ha='left', fontsize=8)
+                        va='center', ha='left', fontsize=12)
 
-        plt.title("Comparison of Models across Multiple Metrics")
-        plt.xlabel("Score")
-        plt.ylabel("Metrics")
-        plt.xlim(0, metrics_df["Mean"].max() + metrics_df["Std"].max() + 0.05)
+        plt.title("Comparison of Models across Multiple Metrics", fontsize=16)
+        plt.xlabel("Score", fontsize=16, fontweight="bold")
+        plt.ylabel("Metrics", fontsize=16, fontweight="bold")
+        plt.xlim(0, metrics_df["Mean"].max() + metrics_df["Std"].max() + 0.06)
         plt.xticks(np.arange(0, 1.01, 0.1))
 
-        plt.legend(title="Algorithms", loc='lower left', frameon=True)
+        plt.legend(title="Algorithms", loc='lower left', frameon=True, fontsize=16)
         plt.tight_layout()
         plt.savefig(self.result_path+"comparison.png", dpi=1200)
 
