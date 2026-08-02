@@ -145,7 +145,7 @@ class PlotManager:
         plt.title("Comparison of Models across Multiple Metrics", fontsize=16)
         plt.xlabel("Score", fontsize=16, fontweight="bold")
         plt.ylabel("Metrics", fontsize=16, fontweight="bold")
-        plt.xlim(0, metrics_df["Mean"].max() + metrics_df["Std"].max() + 0.06)
+        plt.xlim(0, metrics_df["Mean"].max() + metrics_df["Std"].max() + 0.08)
         plt.xticks(np.arange(0, 1.01, 0.1))
 
         plt.legend(title="Algorithms", loc='lower left', frameon=True, fontsize=16)
